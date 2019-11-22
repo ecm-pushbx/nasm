@@ -687,16 +687,18 @@ restart_parse:
              *!  of a typo, but is technically correct NASM syntax (see \k{syntax}.)
              */
             if (i == 0) {
-                nasm_warn(WARN_LABEL_ORPHAN ,
-                           "label alone on a line without a colon might be in error");
+                nasm_warn(WARN_LABEL_ORPHAN,
+                           "label `%s' alone on a line without a colon might be in error",
+                           result->label);
             }
             /*!
              *!label-no-colon [off] labels without trailing `:'
              *!  warns about source lines which define a label that
              *!  is specified without a trailing colon and without an EQU.
              */
-            nasm_warn(WARN_LABEL_NO_COLON ,
-                       "label not followed by a colon");
+            nasm_warn(WARN_LABEL_NO_COLON,
+                       "label `%s' not followed by a colon",
+                       result->label);
         }
         if (i != TOKEN_INSN || tokval.t_integer != I_EQU) {
             /*

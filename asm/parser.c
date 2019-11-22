@@ -678,7 +678,7 @@ restart_parse:
         i = stdscan(NULL, &tokval);
         if (i == ':') {         /* skip over the optional colon */
             i = stdscan(NULL, &tokval);
-        } else if (i == 0) {
+        } else if (i != TOKEN_INSN || tokval.t_integer != I_EQU) {
             /*!
              *!label-orphan [on] labels alone on lines without trailing `:'
              *!=orphan-labels
@@ -686,8 +686,17 @@ restart_parse:
              *!  a label without a trailing colon. This is most likely indicative
              *!  of a typo, but is technically correct NASM syntax (see \k{syntax}.)
              */
-            nasm_warn(WARN_LABEL_ORPHAN ,
-                       "label alone on a line without a colon might be in error");
+            if (i == 0) {
+                nasm_warn(WARN_LABEL_ORPHAN ,
+                           "label alone on a line without a colon might be in error");
+            }
+            /*!
+             *!label-no-colon [off] labels without trailing `:'
+             *!  warns about source lines which define a label that
+             *!  is specified without a trailing colon and without an EQU.
+             */
+            nasm_warn(WARN_LABEL_NO_COLON ,
+                       "label not followed by a colon");
         }
         if (i != TOKEN_INSN || tokval.t_integer != I_EQU) {
             /*
